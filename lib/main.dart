@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_interview/inherited_page.dart';
 
 void main() {
   runApp(MyApp());
 }
+
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -10,18 +13,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.pink,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Demo Home Page', myChild: MyCenterWidget()),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.title, this.myChild}) : super(key: key);
 
   final String title;
+  final Widget myChild;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -38,29 +42,47 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print('1. hàm build được gọi do hàm setState được gọi');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+      body: MyInheritedWidget(
+        myData: _counter,
+        child: widget.myChild
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: () {
+          setState(() {
+            _counter++;
+          });
+        },
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      )
     );
   }
 }
+
+class MyCenterWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    print('2. log build MyCenterWidget');
+    return Center(
+      child: MyText(),
+    );
+  }
+}
+
+class MyText extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final couter = MyInheritedWidget.of(context).myData;
+    print('3. log build MyText với counter = $couter');
+    return Text(
+      "djaslkdjakd ad : $couter"
+    );
+  }
+}
+
+
+
